@@ -1,6 +1,6 @@
 # StarGate: Deterministic Pseudorandom Byte Generator
 
-🚀 This project is backed by the paper "Improving the Security of Cryptographic Keys Using Modified Chaotic Models" by Daniil Baikalov (PDF available in repo).
+🚀 This project is backed by the paper "StarGate: Pseudo-random number generator based on matrix transformations" by Daniel Baikalov (PDF available in repo).
 
 [Read the paper](https://github.com/WorldzTech/StarGate/blob/c7974ebf9d5abecf7b780aee5a0c2c8abd1da71d/StarGate%3A%20Pseudo-random%20number%20generator%20based%20on%20matrix%20transformations.pdf)
 
@@ -72,7 +72,7 @@ Full sequence is detailed in the article's "Byte Generation Algorithm" section.
 
 ## Contacts and Sources
 
-**Algorithm Author:** Baykalov Daniil (felix.trof@gmail.com).
+**Algorithm Author:** Baykalov Daniel (felix.trof@gmail.com).
 
 **Article:** StarGate: Pseudorandom Number Generator Based on Matrix Transformations.
 

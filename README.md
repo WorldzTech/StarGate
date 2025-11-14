@@ -2,7 +2,7 @@
 
 🚀 This project is backed by the paper "Improving the Security of Cryptographic Keys Using Modified Chaotic Models" by Daniil Baikalov (PDF available in repo).
 
-📚 Read the paper
+[Read the paper](https://github.com/WorldzTech/StarGate/blob/c7974ebf9d5abecf7b780aee5a0c2c8abd1da71d/StarGate%3A%20Pseudo-random%20number%20generator%20based%20on%20matrix%20transformations.pdf)
 
 ## Description
 StarGate is a deterministic pseudorandom byte generator (PRNG) designed for cryptographic applications, emphasizing high diffusion, nonlinearity, and computational efficiency. The algorithm is based on matrix transformations and uses a compact internal state (~547 bytes), making it ideal for lightweight systems such as Internet of Things (IoT) devices, real-time encryption, and key generation.

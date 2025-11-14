@@ -7,6 +7,24 @@
 ## Description
 StarGate is a deterministic pseudorandom byte generator (PRNG) designed for cryptographic applications, emphasizing high diffusion, nonlinearity, and computational efficiency. The algorithm is based on matrix transformations and uses a compact internal state (~547 bytes), making it ideal for lightweight systems such as Internet of Things (IoT) devices, real-time encryption, and key generation.
 
+## Usage
+1. Download source code in Releases Tab
+2. Open source folder in any IDE
+3. Build it with
+```bash
+go build -o stargate .
+```
+4. Install it to PATH
+```bash
+go install
+```
+5. Use it in 2 modes
+```bash 
+stargate file <path_to_file> <output_file_name> # this command will encode specified file and return a key for decoding
+stargate file <path_to_file> <output_file_name> <key> # this command will process specified file with specified key. Use it to encode file with specefic key or decode it
+stargate stream <bytes_amount> <output_file_name> # this command will generate a byte stream of specified length
+```
+
 ## Key Features
 * Matrix Architecture: Central 16×16 byte matrix, initialized from a 256-byte key.
 

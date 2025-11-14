@@ -1,4 +1,4 @@
-module waver
+module stargate
 
 go 1.23.3
 

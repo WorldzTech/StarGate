@@ -1,6 +1,5 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -10,21 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "stargate",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Short: "A CLI tool to use StarGate generator. Generate a random stream of bytes or process files and messages with stream cipher based on StarGate.",
+	Long:  `StarGate is a deterministic pseudorandom byte generator (PRNG) designed for cryptographic applications, emphasizing high diffusion, nonlinearity, and computational efficiency. The algorithm is based on matrix transformations and uses a compact internal state (~547 bytes), making it ideal for lightweight systems such as Internet of Things (IoT) devices, real-time encryption, and key generation.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -47,5 +36,3 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-

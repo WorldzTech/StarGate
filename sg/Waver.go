@@ -3,6 +3,7 @@ package sg
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 )
 
@@ -34,7 +35,7 @@ type Waver struct {
 	Gates     []*MatrixGate
 }
 
-func NewWaver(key string) (*Waver, error) {
+func NewWaver(key, nonce string) (*Waver, error) {
 	workWithKey := key
 	if key == "" {
 		k, err := GenKey256()
@@ -70,22 +71,30 @@ func NewWaver(key string) (*Waver, error) {
 		gates = append(gates, gate)
 	}
 
-	nonce, err := GenNonce()
-
-	if err != nil {
-		return nil, err
+	if nonce == "" {
+		nonce, err = GenNonce()
+		if err != nil {
+			return nil, err
+		}
+		fmt.Printf("Nonce: %s\n", nonce)
 	}
 
-	fmt.Printf("Nonce: %s\n", nonce)
-
-	return &Waver{
+	w := &Waver{
 		Matrix:   matrix,
 		Nonce:    nonce,
 		X:        x,
 		Y:        y,
 		Gates:    gates,
 		LastPool: &SizedPool{Size: 32},
-	}, nil
+	}
+
+	err = w.ApplyNonce()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return w, nil
 }
 
 func (w *Waver) PassThroughGates(val byte) byte {
@@ -184,4 +193,39 @@ func (w *Waver) GetNext() byte {
 	r = w.MixByte(r)
 
 	return r
+}
+
+func (w *Waver) ApplyNonce() error {
+	if len(w.Nonce) != 16 {
+		return errors.New("nonce must be 16 characters length")
+	}
+
+	nonceBytes := []byte(w.Nonce)
+
+	idx := 0
+	for i := 0; i < 16; i++ {
+		for j := 0; j < 16; j++ {
+			if idx < len(nonceBytes) {
+				w.Matrix[i][j] ^= nonceBytes[idx]
+				idx++
+			} else {
+				idx = 0
+			}
+		}
+	}
+
+	for g := 0; g < len(w.Gates); g++ {
+		for i := 0; i < 4; i++ {
+			for j := 0; j < 4; j++ {
+				if idx < len(nonceBytes) {
+					w.Gates[g].Matrix[i][j] ^= nonceBytes[idx]
+					idx++
+				} else {
+					idx = 0
+				}
+			}
+		}
+	}
+
+	return nil
 }

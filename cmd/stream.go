@@ -26,9 +26,10 @@ to quickly create a Cobra application.`,
 		length, _ := cmd.Flags().GetInt("length")
 		output, _ := cmd.Flags().GetString("output")
 		key, _ := cmd.Flags().GetString("key")
+		nounce, _ := cmd.Flags().GetString("nounce")
 
 		if consoleOutput {
-			cipher, _ := sg.NewCipher(key)
+			cipher, _ := sg.NewCipher(key, nounce)
 			for range length {
 				fmt.Println(cipher.GetNextByte())
 			}
@@ -46,6 +47,7 @@ func init() {
 	streamCmd.Flags().IntP("length", "l", 256, "Use this flag to specify length of the stream. 256 by default.")
 	streamCmd.Flags().StringP("output", "o", "stargate_stream", "Use this flag to provide file name as output file.")
 	streamCmd.Flags().StringP("key", "k", "", "Specified key to use. If it is not specified will generate a random.")
+	streamCmd.Flags().StringP("nonce", "n", "", "Specified nounce to use. If it is not specified will generate a random.")
 
 	// Here you will define your flags and configuration settings.
 

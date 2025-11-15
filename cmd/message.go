@@ -29,10 +29,11 @@ to quickly create a Cobra application.`,
 		}
 
 		key, _ := cmd.Flags().GetString("key")
+		nonce, _ := cmd.Flags().GetString("nonce")
 		bytemode, _ := cmd.Flags().GetBool("bytemode")
 		numericBytes, _ := cmd.Flags().GetBool("numericbytes")
 
-		cipher, _ := sg.NewCipher(key)
+		cipher, _ := sg.NewCipher(key, nonce)
 
 		cipherText := ""
 
@@ -46,11 +47,11 @@ to quickly create a Cobra application.`,
 
 			if numericBytes {
 				for _, b := range bytes {
-					parts = append(parts, fmt.Sprintf("%02x", b))
+					parts = append(parts, fmt.Sprintf("%d", b))
 				}
 			} else {
 				for _, b := range bytes {
-					parts = append(parts, fmt.Sprintf("%d", b))
+					parts = append(parts, fmt.Sprintf("%02x", b))
 				}
 			}
 
@@ -67,7 +68,8 @@ func init() {
 
 	messageCmd.Flags().StringP("key", "k", "", "Specified key to use. If it is not specified will generate a random.")
 	messageCmd.Flags().BoolP("bytemode", "b", false, "Display byte view of cipher text")
-	messageCmd.Flags().BoolP("numericbytes", "n", false, "Display byte view as numeric bytes")
+	messageCmd.Flags().BoolP("numericbytes", "d", false, "Display byte view as digits bytes")
+	messageCmd.Flags().StringP("nonce", "n", "", "Specified nonce to use")
 
 	// Here you will define your flags and configuration settings.
 

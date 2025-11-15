@@ -29,9 +29,10 @@ to quickly create a Cobra application.`,
 		}
 
 		key, _ := cmd.Flags().GetString("key")
+		nonce, _ := cmd.Flags().GetString("nonce")
 		output, _ := cmd.Flags().GetString("output")
 
-		cipher, _ := sg.NewCipher(key)
+		cipher, _ := sg.NewCipher(key, nonce)
 		err := cipher.WorkWithFile(args[0], output)
 
 		if err != nil {
@@ -47,6 +48,7 @@ func init() {
 
 	fileCmd.Flags().StringP("output", "o", "stargate_output", "Output file where result of prcessing will be saved")
 	fileCmd.Flags().StringP("key", "k", "", "Specified key to use. If it is not specified will generate a random.")
+	fileCmd.Flags().StringP("nonce", "n", "", "Specified nonce to use")
 
 	// Here you will define your flags and configuration settings.
 

@@ -10,8 +10,8 @@ type Cipher struct {
 	waver *Waver
 }
 
-func NewCipher(key string) (*Cipher, error) {
-	waver, err := NewWaver(key)
+func NewCipher(key, nonce string) (*Cipher, error) {
+	waver, err := NewWaver(key, nonce)
 
 	if err != nil {
 		return nil, err

@@ -48,3 +48,17 @@ func (c *Cipher) WorkWithFile(filepath, newFilePath string) error {
 
 	return nil
 }
+
+func (c *Cipher) WorkWithMessage(message string) string {
+	cipherText := ""
+
+	for _, char := range message {
+		cipherText += string(char ^ rune(c.waver.GetNext()))
+	}
+
+	return cipherText
+}
+
+func (c *Cipher) GetNextByte() byte {
+	return c.waver.GetNext()
+}

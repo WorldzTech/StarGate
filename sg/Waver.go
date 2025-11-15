@@ -15,8 +15,18 @@ func GenKey256() (string, error) {
 	return hex.EncodeToString(key), nil
 }
 
+func GenNonce() (string, error) {
+	key := make([]byte, 8)
+	_, err := rand.Read(key)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(key), nil
+}
+
 type Waver struct {
 	Matrix    [][]byte
+	Nonce     string
 	X         uint8
 	Y         uint8
 	OffsetSum uint8
@@ -60,8 +70,17 @@ func NewWaver(key string) (*Waver, error) {
 		gates = append(gates, gate)
 	}
 
+	nonce, err := GenNonce()
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("Nonce: %s\n", nonce)
+
 	return &Waver{
 		Matrix:   matrix,
+		Nonce:    nonce,
 		X:        x,
 		Y:        y,
 		Gates:    gates,

@@ -29,11 +29,11 @@ var streamCmd = &cobra.Command{
 		length, _ := cmd.Flags().GetInt("length")
 		output, _ := cmd.Flags().GetString("output")
 		key, _ := cmd.Flags().GetString("key")
-		nounce, _ := cmd.Flags().GetString("nounce")
+		nonce, _ := cmd.Flags().GetString("nonce")
 		hexOutput, _ := cmd.Flags().GetBool("hexoutput")
 
 		if consoleOutput {
-			cipher, err := sg.NewCipher(key, nounce)
+			cipher, err := sg.NewCipher(key, nonce)
 
 			if err != nil {
 				log.Fatalf("Failed to initialize cipher: %v", err)

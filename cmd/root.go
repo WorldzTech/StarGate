@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 Daniel Baikalov <felix.trof@gmail.com>
 */
 package cmd
 

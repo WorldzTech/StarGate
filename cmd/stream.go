@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 Daniel Baikalov <felix.trof@gmail.com>
 */
 package cmd
 
@@ -14,19 +14,37 @@ import (
 // streamCmd represents the stream command
 var streamCmd = &cobra.Command{
 	Use:   "stream",
-	Short: "Generates a byte stream",
-	Long:  `Generates a bytes stream which you can save in file or print it in console.`,
+	Short: "Generates a pseudorandom byte stream using StarGate",
+	Long: `Generates a deterministic pseudorandom byte stream using StarGate PRNG.
+
+- Key: 512-byte string (512 chars). Random if omitted.
+- Nonce: 16-byte string (16 chars). Random if omitted.
+- Output: raw bytes (no nonce prepended).
+- Use --console to print bytes to stdout.
+- Otherwise: saves to binary file.`,
+	Example: `stargate stream -l 512 -o stream.bin
+  	stargate stream -c -l 8 -b`,
 	Run: func(cmd *cobra.Command, args []string) {
 		consoleOutput, _ := cmd.Flags().GetBool("console")
 		length, _ := cmd.Flags().GetInt("length")
 		output, _ := cmd.Flags().GetString("output")
 		key, _ := cmd.Flags().GetString("key")
 		nounce, _ := cmd.Flags().GetString("nounce")
+		hexOutput, _ := cmd.Flags().GetBool("hexoutput")
 
 		if consoleOutput {
-			cipher, _ := sg.NewCipher(key, nounce)
+			cipher, err := sg.NewCipher(key, nounce)
+
+			if err != nil {
+				log.Fatalf("Failed to initialize cipher: %v", err)
+			}
+
 			for range length {
-				fmt.Println(cipher.GetNextByte())
+				if hexOutput {
+					fmt.Println(fmt.Sprintf("%02x", cipher.GetNextByte()))
+				} else {
+					fmt.Println(cipher.GetNextByte())
+				}
 			}
 		} else {
 			sg.CreateBin(length, output, key)
@@ -38,19 +56,22 @@ var streamCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(streamCmd)
 
-	streamCmd.Flags().BoolP("console", "c", false, "Use this flag to print stream in console")
-	streamCmd.Flags().IntP("length", "l", 256, "Use this flag to specify length of the stream. 256 by default.")
-	streamCmd.Flags().StringP("output", "o", "stargate_stream", "Use this flag to provide file name as output file.")
-	streamCmd.Flags().StringP("key", "k", "", "Specified key to use. If it is not specified will generate a random.")
-	streamCmd.Flags().StringP("nonce", "n", "", "Specified nounce to use. If it is not specified will generate a random.")
+	streamCmd.Flags().BoolP("console", "c", false,
+		"Print stream to console in hexdump format.")
 
-	// Here you will define your flags and configuration settings.
+	streamCmd.Flags().IntP("length", "l", 256,
+		"Length of stream in bytes. Default: 256.")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// streamCmd.PersistentFlags().String("foo", "", "A help for foo")
+	streamCmd.Flags().StringP("output", "o", "stargate_stream",
+		"Base name for output file. Saved as <name>.bin.")
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// streamCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	streamCmd.Flags().StringP("key", "k", "",
+		"512-byte key as string (512 chars). If empty — random key is generated.")
+
+	streamCmd.Flags().StringP("nonce", "n", "",
+		"16-byte nonce as string (16 chars). If empty — random nonce is generated.")
+
+	streamCmd.Flags().BoolP("hexoutput", "b", false,
+		"Output as hex bytes.")
+
 }

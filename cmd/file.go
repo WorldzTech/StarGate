@@ -1,10 +1,9 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 Daniel Baikalov <felix.trof@gmail.com>
 */
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"stargate/sg"
 
@@ -13,45 +12,58 @@ import (
 
 // fileCmd represents the file command
 var fileCmd = &cobra.Command{
-	Use:   "file",
-	Short: "Processes a file with stream cipher based on StarGate",
-	Long:  `Processes a file with stream cipher based on StarGate`,
+	Use:   "file <input-file>",
+	Short: "Encrypts or decrypts a file using StarGate stream cipher",
+	Long: `Encrypts or decrypts a file using StarGate stream cipher.
+
+- Default: encryption.
+- Use --decrypt to decrypt.
+- Key: 512-byte string (512 chars). Random if omitted.
+- Nonce: 16-byte string (16 chars). Random if omitted.
+- Output: [nonce(16)] + [ciphertext]
+
+Examples:
+  stargate file input.txt -o out.sg
+  stargate file out.sg -o input.txt -d -k <512-byte-string>
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) != 1 {
-			log.Println("To process file provide it name")
-			return
+			log.Fatal("A single file path is required")
 		}
 
-		key, _ := cmd.Flags().GetString("key")
-		nonce, _ := cmd.Flags().GetString("nonce")
-		output, _ := cmd.Flags().GetString("output")
+		inputPath := args[0]
+		outputPath, _ := cmd.Flags().GetString("output")
+		keyStr, _ := cmd.Flags().GetString("key")
+		nonceStr, _ := cmd.Flags().GetString("nonce")
+		decryptMode, _ := cmd.Flags().GetBool("decrypt")
 
-		cipher, _ := sg.NewCipher(key, nonce)
-		err := cipher.WorkWithFile(args[0], output)
-
+		cipher, err := sg.NewCipher(keyStr, nonceStr)
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Fatalf("Failed to initialize cipher: %v", err)
 		}
 
-		log.Printf("File processed and saved as %s\n", output)
+		if decryptMode {
+			if err := cipher.DecryptFile(inputPath, outputPath); err != nil {
+				log.Fatalf("Processing failed: %v", err)
+			}
+		} else {
+			if err := cipher.EncryptFile(inputPath, outputPath); err != nil {
+				log.Fatalf("Processing failed: %v", err)
+			}
+		}
+
+		log.Printf("File processed successfully → %s", outputPath)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(fileCmd)
 
-	fileCmd.Flags().StringP("output", "o", "stargate_output", "Output file where result of prcessing will be saved")
-	fileCmd.Flags().StringP("key", "k", "", "Specified key to use. If it is not specified will generate a random.")
-	fileCmd.Flags().StringP("nonce", "n", "", "Specified nonce to use")
+	fileCmd.Flags().StringP("output", "o", "stargate_output", "Output file path.")
+	fileCmd.Flags().StringP("key", "k", "", "512-byte key as string (512 chars). If empty — random key is generated.")
+	fileCmd.Flags().StringP("nonce", "n", "", "16-byte nonce as string (16 chars). If empty — random nonce is generated.")
+	fileCmd.Flags().BoolP("decrypt", "d", false, "Decrypt mode (default: encrypt).")
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// fileCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// fileCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	_ = fileCmd.MarkFlagFilename("output")
 }

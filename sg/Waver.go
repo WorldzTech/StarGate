@@ -197,7 +197,7 @@ func (w *Waver) GetNext() byte {
 
 func (w *Waver) ApplyNonce() error {
 	if len(w.Nonce) != 16 {
-		return errors.New("nonce must be 16 characters length")
+		return errors.New("nonce must be 16 characters length. Nounce: " + w.Nonce)
 	}
 
 	nonceBytes := []byte(w.Nonce)

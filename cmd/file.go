@@ -38,7 +38,7 @@ Examples:
 		nonceStr, _ := cmd.Flags().GetString("nonce")
 		decryptMode, _ := cmd.Flags().GetBool("decrypt")
 
-		cipher, err := sg.NewCipher(keyStr, nonceStr)
+		cipher, err := sg.NewCipher(keyStr, nonceStr, false)
 		if err != nil {
 			log.Fatalf("Failed to initialize cipher: %v", err)
 		}

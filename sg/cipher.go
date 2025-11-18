@@ -8,27 +8,29 @@ import (
 )
 
 type Cipher struct {
-	key   string
-	Nonce string
-	waver *Waver
+	key          string
+	Nonce        string
+	waver        *Waver
+	CorrTestMode bool
 }
 
-func NewCipher(key, nonce string) (*Cipher, error) {
-	waver, err := NewWaver(key, nonce)
+func NewCipher(key, nonce string, corrTestMode bool) (*Cipher, error) {
+	waver, err := NewWaver(key, nonce, corrTestMode)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &Cipher{
-		key:   key,
-		waver: waver,
-		Nonce: waver.Nonce,
+		key:          key,
+		waver:        waver,
+		Nonce:        waver.Nonce,
+		CorrTestMode: corrTestMode,
 	}, nil
 }
 
 func (c *Cipher) ReinitializeWithNewNonce(nonce string) error {
-	waver, err := NewWaver(c.key, nonce)
+	waver, err := NewWaver(c.key, nonce, true)
 
 	if err != nil {
 		return err
@@ -141,4 +143,8 @@ func (c *Cipher) WorkWithMessage(message string) string {
 
 func (c *Cipher) GetNextByte() byte {
 	return c.waver.GetNext()
+}
+
+func (c *Cipher) GetNextByte_CORR_TEST() (byte, byte) {
+	return c.waver.GetNext_CORR_TEST()
 }

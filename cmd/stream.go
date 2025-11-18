@@ -31,21 +31,35 @@ var streamCmd = &cobra.Command{
 		key, _ := cmd.Flags().GetString("key")
 		nonce, _ := cmd.Flags().GetString("nonce")
 		hexOutput, _ := cmd.Flags().GetBool("hexoutput")
+		corrTestMode, _ := cmd.Flags().GetBool("corrtestmode")
 
 		if consoleOutput {
-			cipher, err := sg.NewCipher(key, nonce)
+			cipher, err := sg.NewCipher(key, nonce, corrTestMode)
 
 			if err != nil {
 				log.Fatalf("Failed to initialize cipher: %v", err)
 			}
 
-			for range length {
-				if hexOutput {
-					fmt.Println(fmt.Sprintf("%02x", cipher.GetNextByte()))
-				} else {
-					fmt.Println(cipher.GetNextByte())
+			if corrTestMode {
+				for range length {
+					if hexOutput {
+						b1, b2 := cipher.GetNextByte_CORR_TEST()
+						fmt.Println(fmt.Sprintf("%02x %02x", b1, b2))
+					} else {
+						b1, b2 := cipher.GetNextByte_CORR_TEST()
+						fmt.Println(b1, b2)
+					}
+				}
+			} else {
+				for range length {
+					if hexOutput {
+						fmt.Println(fmt.Sprintf("%02x", cipher.GetNextByte()))
+					} else {
+						fmt.Println(cipher.GetNextByte())
+					}
 				}
 			}
+
 		} else {
 			sg.CreateBin(length, output, key)
 			log.Printf("Byte stream is saved to %s.bin\n", output)
@@ -73,5 +87,8 @@ func init() {
 
 	streamCmd.Flags().BoolP("hexoutput", "b", false,
 		"Output as hex bytes.")
+
+	streamCmd.Flags().BoolP("corrtestmode", "t", false,
+		"Turn on Correlation Test Mode")
 
 }

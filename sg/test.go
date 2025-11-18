@@ -8,7 +8,7 @@ import (
 )
 
 func CreateBin(n int, filename, key string) {
-	w, err := NewWaver(key, "")
+	w, err := NewWaver(key, "", false)
 	if err != nil {
 		panic(err)
 	}

@@ -16,7 +16,7 @@ func NewMatrixGate(vals []byte) *MatrixGate {
 	}
 }
 
-func (gate *MatrixGate) PassValue(val byte, accum byte) uint8 {
+func (gate *MatrixGate) PassValue(val byte, accum int) uint8 {
 	x := accum % 4
 	y := (accum / 4) % 4
 

@@ -51,7 +51,7 @@ Output modes:
 		decryptMode, _ := cmd.Flags().GetBool("decrypt")
 		byteInput, _ := cmd.Flags().GetBool("byteinput")
 
-		cipher, err := sg.NewCipher(key, nonce)
+		cipher, err := sg.NewCipher(key, nonce, false)
 
 		if err != nil {
 			log.Fatalf("Failed to initialize cipher: %v", err)
